@@ -51,8 +51,26 @@ public:///getters and setters///
     UnitOfWeight getWeightUnit() const noexcept;
     void setWeight(float newWeight);
     void setWeight(float newWeight, UnitOfWeight weightUnits);
-
+    void setMaxWeight(float newMaxWeight);
 public:///validation///
+    bool isWeightValid(float checkWeight) const noexcept;
+    bool validate() const noexcept;
+    void dump() const noexcept;
 
+public:///operators///
+    bool operator==(const Weight &rhs_Weight) const;
+    bool operator<(const Weight &rhs_Weight) const;
+    Weight & operator+=(float rhs_addToWeight);
+    static float fromKilogramToPound(float kilogram) noexcept;
+    static float fromPoundToKilogram(float pound) noexcept;
+    static float fromSlugToPound(float slug) noexcept;
+    static float fromPoundToSlug(float pound) noexcept;
+    static float convertWeight(float fromWeight, UnitOfWeight fromUnit, UnitOfWeight toUnit) noexcept;
 };
+
+
+
+
+
+
 
