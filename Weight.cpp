@@ -22,37 +22,64 @@ const std::string SLUG_LABEL  = "Slug";
 
 ///constructors///
 Weight::Weight() noexcept {
-
+   weight       = UNKNOWN_WEIGHT;
+   maxWeight    = UNKNOWN_WEIGHT;
+   unitOfWeight = POUND;
+   bIsKnown     = false;
+   bHasMax      = false;
 }
 Weight::Weight(float newWeight) {
-
+    weight       = newWeight;
+    maxWeight    = UNKNOWN_WEIGHT;
+    unitOfWeight = POUND;
+    bIsKnown     = true;
+    bHasMax      = false;
 }
 Weight::Weight(Weight::UnitOfWeight newUnitOfWeight) noexcept {
+    weight       = UNKNOWN_WEIGHT;
+    maxWeight    = UNKNOWN_WEIGHT;
+    unitOfWeight = newUnitOfWeight;
+    bIsKnown     = false;
+    bHasMax      = false;
 
 }
 Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight) {
-
+    weight       = newWeight;
+    maxWeight    = UNKNOWN_WEIGHT;
+    unitOfWeight = newUnitOfWeight;
+    bIsKnown     = true;
+    bHasMax      = false;
 }
 Weight::Weight(float newWeight, float newMaxWeight) {
-
+    weight       = newWeight;
+    maxWeight    = newMaxWeight;
+    unitOfWeight = POUND;
+    bIsKnown     = true;
+    bHasMax      = true;
 }
 Weight::Weight(Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
-
+    weight       = UNKNOWN_WEIGHT;
+    maxWeight    = newMaxWeight;
+    unitOfWeight = newUnitOfWeight;
+    bIsKnown     = false;
+    bHasMax      = true;
 }
 Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
-    setMaxWeight( newMaxWeight );
-    assert( validate() );
+    weight       = newWeight;
+    maxWeight    = newMaxWeight;
+    unitOfWeight = newUnitOfWeight;
+    bIsKnown     = true;
+    bHasMax      = true;
 }
-
 ///getters and setters///
 bool Weight::isWeightKnown() const noexcept {
-    return false;
+    return bIsKnown;
 }
 bool Weight::hasMaxWeight() const noexcept {
-    return false;
+    return bHasMax;
 }
 float Weight::getWeight() const noexcept {
-    return 0;
+    return weight;
 }
 float Weight::getWeight(Weight::UnitOfWeight weightUnits) const noexcept {
     return 0;
