@@ -27,4 +27,32 @@ public: ////////////// Enumerations //////////////
     static const std::string SLUG_LABEL ;
 
 private:
+    bool bIsKnown;
+    bool bHasMax;
+    enum UnitOfWeight unitOfWeight;
+    float weight;
+    float maxWeight;
+
+public:///constructors///
+    Weight() noexcept;
+    Weight(float newWeight);
+    Weight(UnitOfWeight newUnitOfWeight) noexcept;
+    Weight(float newWeight, UnitOfWeight newUnitOfWeight);
+    Weight(float newWeight, float newMaxWeight);
+    Weight(UnitOfWeight newUnitOfWeight, float newMaxWeight);
+    Weight(float newWeight, UnitOfWeight newUnitOfWeight, float newMaxWeight);
+
+public:///getters and setters///
+    bool isWeightKnown() const noexcept;
+    bool hasMaxWeight() const noexcept;
+    float getWeight() const noexcept;
+    float getWeight(UnitOfWeight weightUnits) const noexcept;
+    float getMaxWeight() const noexcept;
+    UnitOfWeight getWeightUnit() const noexcept;
+    void setWeight(float newWeight);
+    void setWeight(float newWeight, UnitOfWeight weightUnits);
+
+public:///validation///
+
 };
+

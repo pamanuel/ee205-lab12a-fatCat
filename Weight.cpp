@@ -19,3 +19,30 @@ const std::string POUND_LABEL = "Pound";
 const std::string KILO_LABEL  = "Kilo";
 const std::string SLUG_LABEL  = "Slug";
 
+Weight::Weight() noexcept {
+
+}
+
+Weight::Weight(float newWeight) {
+
+}
+
+Weight::Weight(Weight::UnitOfWeight newUnitOfWeight) noexcept {
+
+}
+
+Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight) {
+
+}
+
+Weight::Weight(float newWeight, float newMaxWeight) {
+
+}
+
+Weight::Weight(Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
+
+}
+
+Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
+
+}
