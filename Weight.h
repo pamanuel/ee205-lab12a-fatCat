@@ -51,7 +51,9 @@ public:///getters and setters///
     UnitOfWeight getWeightUnit() const noexcept;
     void setWeight(float newWeight);
     void setWeight(float newWeight, UnitOfWeight weightUnits);
+private:///animals have a max weight///
     void setMaxWeight(float newMaxWeight);
+
 public:///validation///
     bool isWeightValid(float checkWeight) const noexcept;
     bool validate() const noexcept;
@@ -67,6 +69,10 @@ public:///operators///
     static float fromPoundToSlug(float pound) noexcept;
     static float convertWeight(float fromWeight, UnitOfWeight fromUnit, UnitOfWeight toUnit) noexcept;
 };
+
+
+
+
 
 
 
