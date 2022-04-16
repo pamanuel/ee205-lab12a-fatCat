@@ -85,31 +85,41 @@ float Weight::getWeight(Weight::UnitOfWeight weightUnits) const noexcept {
     return 0;
 }
 float Weight::getMaxWeight() const noexcept {
+    assert(isWeightValid(maxWeight));
     return maxWeight;
 }
 Weight::UnitOfWeight Weight::getWeightUnit() const noexcept {
     return Weight::POUND;
 }
 void Weight::setWeight(float newWeight) {
+    assert(isWeightValid(newWeight));
     weight = newWeight;
 }
 void Weight::setWeight(float newWeight, Weight::UnitOfWeight weightUnits) {
+    assert(isWeightValid(newWeight));
     weight = newWeight;
     unitOfWeight = weightUnits;
 }
 void Weight::setMaxWeight(float newMaxWeight) {
+    assert(isWeightValid(newMaxWeight));
     maxWeight =  newMaxWeight;
 }
 
 ///validation///
 bool Weight::isWeightValid(float checkWeight) const noexcept {
-    return false;
+    if(checkWeight <= 0){
+        return false;
+    }
+    if(bHasMax){
+        assert(checkWeight <= maxWeight);
+    }
+    return true;
 }
-
 bool Weight::validate() const noexcept {
+    assert(isWeightValid(weight));
+    assert(isWeightValid(maxWeight));
     return false;
 }
-
 void Weight::dump() const noexcept {
 
 }
@@ -118,19 +128,15 @@ void Weight::dump() const noexcept {
 float Weight::fromKilogramToPound(float kilogram) noexcept {
     return kilogram / KILOS_IN_A_POUND ;;
 }
-
 float Weight::fromPoundToKilogram(float pound) noexcept {
     return pound * KILOS_IN_A_POUND;
 }
-
 float Weight::fromSlugToPound(float slug) noexcept {
     return slug / SLUGS_IN_A_POUND;
 }
-
 float Weight::fromPoundToSlug(float pound) noexcept {
     return pound * SLUGS_IN_A_POUND;
 }
-
 float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Weight::UnitOfWeight toUnit) noexcept {
     return 0;
 }
@@ -139,11 +145,8 @@ float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Wei
 bool Weight::operator==(const Weight &rhs_Weight) const {
     return false;
 }
-
 bool Weight::operator<(const Weight &rhs_Weight) const {
     return false;
 }
-
 Weight &Weight::operator+=(float rhs_addToWeight) {
-    return <#initializer#>;
 }
