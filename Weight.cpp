@@ -86,14 +86,15 @@ float Weight::getWeight() const noexcept {
 }
 
 float Weight::getWeight(Weight::UnitOfWeight weightUnits) const noexcept {
-    return 0;///not done
+    float currentWeight = convertWeight(weight, unitOfWeight, weightUnits);
+    return currentWeight;
 }
 float Weight::getMaxWeight() const noexcept {
     assert(isWeightValid(maxWeight));
     return maxWeight;
 }
 Weight::UnitOfWeight Weight::getWeightUnit() const noexcept {
-    return Weight::POUND;///not done
+    return unitOfWeight;
 }
 void Weight::setWeight(float newWeight) {
     assert(isWeightValid(newWeight));
@@ -143,7 +144,7 @@ void Weight::dump() const noexcept {
 
 ///conversions///
 float Weight::fromKilogramToPound(float kilogram) noexcept {
-    return kilogram / KILOS_IN_A_POUND ;;
+    return kilogram / KILOS_IN_A_POUND ;
 }
 float Weight::fromPoundToKilogram(float pound) noexcept {
     return pound * KILOS_IN_A_POUND;
@@ -179,8 +180,7 @@ float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Wei
 }
 
 ///operators///
-std::ostream& operator<<( ostream& lhs_stream
-        ,const Weight::UnitOfWeight rhs_UnitOfWeight ) {
+std::ostream& operator<<( ostream& lhs_stream,const Weight::UnitOfWeight rhs_UnitOfWeight ) {
     switch( rhs_UnitOfWeight ) {
         case Weight::POUND: return lhs_stream << Weight::POUND_LABEL ;
         case Weight::KILO: return lhs_stream << Weight::KILO_LABEL ;
@@ -189,13 +189,20 @@ std::ostream& operator<<( ostream& lhs_stream
             throw out_of_range( "The unit can’t be mapped to a string" );
     }
 }
-
+///bIsKnown ? is to check if there is a weight to compare
 bool Weight::operator==(const Weight &rhs_Weight) const {
-    return false;///not done
+    float lhs_weight = (bIsKnown) ? getWeight(Weight::POUND) : 0;
+    float rhs_weight = (rhs_Weight.bIsKnown) ? rhs_Weight.getWeight(Weight::POUND) : 0;
+
+    return lhs_weight == rhs_weight;
 }
 bool Weight::operator<(const Weight &rhs_Weight) const {
+    float lhs_weight = (bIsKnown) ? getWeight(Weight::POUND) : 0;
+    float rhs_weight = (rhs_Weight.bIsKnown) ? rhs_Weight.getWeight(Weight::POUND) : 0;
 
-    return false;///not done
+    return lhs_weight <= rhs_weight;
 }
-Weight &Weight::operator+=(float rhs_addToWeight) {///not done
+Weight &Weight::operator+=(float rhs_addToWeight) {
+    weight += rhs_addToWeight;
+    return *this;
 }

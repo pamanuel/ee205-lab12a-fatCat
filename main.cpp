@@ -8,4 +8,10 @@
 /// @author @Patrick Manuel <pamanuel@hawaii.edu>
 /// @date   14_Apr_2022
 ///////////////////////////////////////////////////////////////////////////////
+#include "Weight.h"
 
+
+int main(){
+    Weight Pat;
+    Pat.dump();
+}
