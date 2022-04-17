@@ -14,4 +14,5 @@
 int main(){
     Weight Pat;
     Pat.dump();
+    Pat.validate();
 }

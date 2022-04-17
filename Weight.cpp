@@ -19,9 +19,9 @@ const float Weight::KILOS_IN_A_POUND = 0.453592;
 const float Weight::SLUGS_IN_A_POUND = 0.031081;
 const float Weight::UNKNOWN_WEIGHT   = -1;
 
-const std::string POUND_LABEL = "Pound";
-const std::string KILO_LABEL  = "Kilo";
-const std::string SLUG_LABEL  = "Slug";
+const std::string Weight::POUND_LABEL = "Pound";
+const std::string Weight::KILO_LABEL  = "Kilo";
+const std::string Weight::SLUG_LABEL  = "Slug";
 
 ///constructors///
 Weight::Weight() noexcept {
@@ -90,7 +90,6 @@ float Weight::getWeight(Weight::UnitOfWeight weightUnits) const noexcept {
     return currentWeight;
 }
 float Weight::getMaxWeight() const noexcept {
-    assert(isWeightValid(maxWeight));
     return maxWeight;
 }
 Weight::UnitOfWeight Weight::getWeightUnit() const noexcept {
@@ -121,9 +120,16 @@ bool Weight::isWeightValid(float checkWeight) const noexcept {
     return true;
 }
 bool Weight::validate() const noexcept {
-    assert(isWeightValid(weight));
-    assert(isWeightValid(maxWeight));
-    return false;
+    if(isWeightValid(weight)){
+        return true;
+    }
+    if(isWeightValid(maxWeight)){
+        return true;
+    }
+    else{
+        cout << "Weight not Valid" << endl;
+        return false;
+    }
 }
 
 #define FORMAT_LINE( className, member ) cout << setw(8) << (className) << setw(20) << (member) << setw(52)
@@ -180,6 +186,7 @@ float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Wei
 }
 
 ///operators///
+std::ostream& operator<<( ostream& lhs_stream,Weight::UnitOfWeight rhs_UnitOfWeight );
 std::ostream& operator<<( ostream& lhs_stream,const Weight::UnitOfWeight rhs_UnitOfWeight ) {
     switch( rhs_UnitOfWeight ) {
         case Weight::POUND: return lhs_stream << Weight::POUND_LABEL ;
