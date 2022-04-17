@@ -132,12 +132,12 @@ void Weight::dump() const noexcept {
     cout << setfill( ' ' ) ;
     cout << left ;
     cout << boolalpha ;
-    FORMAT_LINE( "Weight" , "this" )         << this << endl ;
-    FORMAT_LINE( "Weight", "isKnown" )      << bIsKnown << endl ;
-    FORMAT_LINE( "Weight", "weight" )       << getWeight() << endl ;
+    FORMAT_LINE( "Weight" , "this" )        << this            << endl ;
+    FORMAT_LINE( "Weight", "isKnown" )      << bIsKnown        << endl ;
+    FORMAT_LINE( "Weight", "weight" )       << getWeight()     << endl ;
     FORMAT_LINE( "Weight", "unitOfWeight" ) << getWeightUnit() << endl ;
-    FORMAT_LINE( "Weight", "hasMax" )       << bHasMax << endl ;
-    FORMAT_LINE( "Weight", "maxWeight" )    << getMaxWeight() << endl ;
+    FORMAT_LINE( "Weight", "hasMax" )       << bHasMax         << endl ;
+    FORMAT_LINE( "Weight", "maxWeight" )    << getMaxWeight()  << endl ;
 
 }
 
@@ -155,14 +155,46 @@ float Weight::fromPoundToSlug(float pound) noexcept {
     return pound * SLUGS_IN_A_POUND;
 }
 float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Weight::UnitOfWeight toUnit) noexcept {
-    return 0;///not done
+    switch(fromUnit){
+        case POUND:
+            switch(toUnit){
+                case POUND: return POUND;
+                case KILO:  return fromPoundToKilogram(fromWeight);
+                case SLUG:  return fromPoundToSlug(fromWeight);
+            }
+            case KILO:
+            switch(toUnit){
+                case POUND: return fromKilogramToPound(fromWeight);
+                case KILO:  return KILO;
+                case SLUG:  return fromPoundToSlug(fromKilogramToPound(fromWeight));
+            }
+            case SLUG:
+                switch(toUnit){
+                    case POUND: return fromSlugToPound(fromWeight);
+                    case KILO:  return fromPoundToKilogram(fromSlugToPound(fromWeight));
+                    case SLUG:  return SLUG;
+            }
+    }
+    return 0.0;
 }
 
 ///operators///
+std::ostream& operator<<( ostream& lhs_stream
+        ,const Weight::UnitOfWeight rhs_UnitOfWeight ) {
+    switch( rhs_UnitOfWeight ) {
+        case Weight::POUND: return lhs_stream << Weight::POUND_LABEL ;
+        case Weight::KILO: return lhs_stream << Weight::KILO_LABEL ;
+        case Weight::SLUG: return lhs_stream << Weight::SLUG_LABEL ;
+        default:
+            throw out_of_range( "The unit can’t be mapped to a string" );
+    }
+}
+
 bool Weight::operator==(const Weight &rhs_Weight) const {
     return false;///not done
 }
 bool Weight::operator<(const Weight &rhs_Weight) const {
+
     return false;///not done
 }
 Weight &Weight::operator+=(float rhs_addToWeight) {///not done
