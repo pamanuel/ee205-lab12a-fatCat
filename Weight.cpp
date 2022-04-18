@@ -30,13 +30,15 @@ Weight::Weight() noexcept {
    unitOfWeight = POUND;
    bIsKnown     = false;
    bHasMax      = false;
+   assert(validate());
 }
 Weight::Weight(float newWeight) {
-    weight       = newWeight;
+    setWeight(newWeight);
     maxWeight    = UNKNOWN_WEIGHT;
     unitOfWeight = POUND;
     bIsKnown     = true;
     bHasMax      = false;
+    assert(validate());
 }
 Weight::Weight(Weight::UnitOfWeight newUnitOfWeight) noexcept {
     weight       = UNKNOWN_WEIGHT;
@@ -44,35 +46,37 @@ Weight::Weight(Weight::UnitOfWeight newUnitOfWeight) noexcept {
     unitOfWeight = newUnitOfWeight;
     bIsKnown     = false;
     bHasMax      = false;
-
+    assert(validate());
 }
 Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight) {
-    weight       = newWeight;
+    setWeight(newWeight, newUnitOfWeight);
     maxWeight    = UNKNOWN_WEIGHT;
-    unitOfWeight = newUnitOfWeight;
     bIsKnown     = true;
     bHasMax      = false;
+    assert(validate());
 }
 Weight::Weight(float newWeight, float newMaxWeight) {
-    weight       = newWeight;
-    maxWeight    = newMaxWeight;
+    setWeight(newWeight);
+    setMaxWeight(newMaxWeight);
     unitOfWeight = POUND;
     bIsKnown     = true;
     bHasMax      = true;
+    assert(validate());
 }
 Weight::Weight(Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
     weight       = UNKNOWN_WEIGHT;
-    maxWeight    = newMaxWeight;
-    unitOfWeight = newUnitOfWeight;
+    setMaxWeight(newMaxWeight);
+    unitOfWeight = newUnitOfWeight;///redundant but has warning if not included.
     bIsKnown     = false;
     bHasMax      = true;
+    assert(validate());
 }
 Weight::Weight(float newWeight, Weight::UnitOfWeight newUnitOfWeight, float newMaxWeight) {
-    weight       = newWeight;
-    maxWeight    = newMaxWeight;
-    unitOfWeight = newUnitOfWeight;
+    setWeight(newWeight, newUnitOfWeight);
+    setMaxWeight(newMaxWeight);
     bIsKnown     = true;
     bHasMax      = true;
+    assert(validate());
 }
 ///getters and setters///
 bool Weight::isWeightKnown() const noexcept {
@@ -97,21 +101,23 @@ Weight::UnitOfWeight Weight::getWeightUnit() const noexcept {
 }
 void Weight::setWeight(float newWeight) {
     assert(isWeightValid(newWeight));
-    weight = newWeight;
+        weight = newWeight;
 }
 void Weight::setWeight(float newWeight, Weight::UnitOfWeight weightUnits) {
     assert(isWeightValid(newWeight));
-    weight = newWeight;
-    unitOfWeight = weightUnits;
+        weight = convertWeight(newWeight,Weight::POUND, weightUnits);
+        unitOfWeight = weightUnits;
 }
 void Weight::setMaxWeight(float newMaxWeight) {
-    assert(isWeightValid(newMaxWeight));
+    assert(validate());
     maxWeight =  newMaxWeight;
+    bHasMax = true;
 }
 
 ///validation///
 bool Weight::isWeightValid(float checkWeight) const noexcept {
-    if(checkWeight <= 0){
+    if(checkWeight <= 0 && checkWeight > Weight::maxWeight){
+        cout << "invalid weight" << endl;
         return false;
     }
     if(bHasMax){
@@ -132,22 +138,6 @@ bool Weight::validate() const noexcept {
     }
 }
 
-#define FORMAT_LINE( className, member ) cout << setw(8) << (className) << setw(20) << (member) << setw(52)
-
-void Weight::dump() const noexcept {
-    cout << setw(80) << setfill('=' ) << "" << endl ;
-    cout << setfill( ' ' ) ;
-    cout << left ;
-    cout << boolalpha ;
-    FORMAT_LINE( "Weight" , "this" )        << this            << endl ;
-    FORMAT_LINE( "Weight", "isKnown" )      << bIsKnown        << endl ;
-    FORMAT_LINE( "Weight", "weight" )       << getWeight()     << endl ;
-    FORMAT_LINE( "Weight", "unitOfWeight" ) << getWeightUnit() << endl ;
-    FORMAT_LINE( "Weight", "hasMax" )       << bHasMax         << endl ;
-    FORMAT_LINE( "Weight", "maxWeight" )    << getMaxWeight()  << endl ;
-
-}
-
 ///conversions///
 float Weight::fromKilogramToPound(float kilogram) noexcept {
     return kilogram / KILOS_IN_A_POUND ;
@@ -165,22 +155,22 @@ float Weight::convertWeight(float fromWeight, Weight::UnitOfWeight fromUnit, Wei
     switch(fromUnit){
         case POUND:
             switch(toUnit){
-                case POUND: return POUND;
+                case POUND: return fromWeight;///no conversion
                 case KILO:  return fromPoundToKilogram(fromWeight);
                 case SLUG:  return fromPoundToSlug(fromWeight);
             }
-            case KILO:
+        case KILO:
             switch(toUnit){
                 case POUND: return fromKilogramToPound(fromWeight);
-                case KILO:  return KILO;
+                case KILO:  return fromWeight;///no conversion
                 case SLUG:  return fromPoundToSlug(fromKilogramToPound(fromWeight));
-            }
-            case SLUG:
-                switch(toUnit){
-                    case POUND: return fromSlugToPound(fromWeight);
-                    case KILO:  return fromPoundToKilogram(fromSlugToPound(fromWeight));
-                    case SLUG:  return SLUG;
-            }
+            }///kilo to pound, pound to slug
+        case SLUG:
+            switch(toUnit){
+                case POUND: return fromSlugToPound(fromWeight);
+                case KILO:  return fromPoundToKilogram(fromSlugToPound(fromWeight));
+                case SLUG:  return fromWeight;///no conversion
+            }///slug to pound, pound to kilo;
     }
     return 0.0;
 }
@@ -210,6 +200,22 @@ bool Weight::operator<(const Weight &rhs_Weight) const {
     return lhs_weight <= rhs_weight;
 }
 Weight &Weight::operator+=(float rhs_addToWeight) {
-    weight += rhs_addToWeight;
+    this->weight += rhs_addToWeight;
     return *this;
 }
+#define FORMAT_LINE( className, member ) cout << setw(8) << (className) << setw(20) << (member) << setw(52)
+
+void Weight::dump() const noexcept {
+    cout << setw(80) << setfill('=' ) << "" << endl ;
+    cout << setfill( ' ' ) ;
+    cout << left ;
+    cout << boolalpha ;
+    FORMAT_LINE( "Weight" , "this" )        << this            << endl ;
+    FORMAT_LINE( "Weight", "isKnown" )      << isWeightKnown() << endl ;
+    FORMAT_LINE( "Weight", "weight" )       << getWeight()     << endl ;
+    FORMAT_LINE( "Weight", "unitOfWeight" ) << getWeightUnit() << endl ;
+    FORMAT_LINE( "Weight", "hasMax" )       << hasMaxWeight()  << endl ;
+    FORMAT_LINE( "Weight", "maxWeight" )    << getMaxWeight()  << endl ;
+
+}
+
